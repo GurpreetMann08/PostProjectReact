@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import axios from "axios";
 import { TextInput, Button, Group, Box } from "@mantine/core";
@@ -7,21 +7,35 @@ import DOMAIN from "../../services/endpoint";
 import { useForm } from "@mantine/form";
 import { useNavigate } from "react-router-dom";
 
-function PostEdit() {
-  const post = useLoaderData();
-
+function PostEdit({ postId }) {
   const navigate = useNavigate();
-  const form = useForm({
-    initialValues: {
-      title: post.title || "",
-      category: post.category || "",
-      image: post.image || "",
-      content: post.content || "",
-    },
-  });
+  const form = useForm();
+  const [post, setPost] = React.useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const response = await axios.get(`${DOMAIN}/api/posts/${postId}`);
+        setPost(response.data);
+        form.setValues({
+          title: response.data.title || "",
+          category: response.data.category || "",
+          image: response.data.image || "",
+          content: response.data.content || "",
+        });
+      } catch (error) {
+        console.error("Error fetching post:", error);
+      }
+    };
+
+    if (postId) {
+      fetchPost();
+    }
+  }, [postId, form]);
 
   const handleSubmit = async (values) => {
-    const res = await axios.post(`${DOMAIN}/api/posts`, values);
+    const res = await axios.post(`${DOMAIN}/api/posts/${post.id}`, values);
     if (res?.data.success) {
       navigate("/posts");
     }

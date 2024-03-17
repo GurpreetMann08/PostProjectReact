@@ -67,7 +67,7 @@ export const Router = () => {
         />
         <Route path="" element={<Landing />} />
         <Route
-          path="/PostEdit.Page"
+          path="/PostEdit.Page/:id"
           element={
             <ProtectedRoute isAllowed={!!authCheck}>
               <PostEdit />

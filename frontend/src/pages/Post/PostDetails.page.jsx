@@ -4,6 +4,8 @@ import axios from "axios";
 import { Button, Container } from "@mantine/core";
 import { useLoaderData } from "react-router-dom";
 import useBoundStore from "../../store/Store";
+import { Paper, Text, Title } from "@mantine/core";
+import classes from "./PostDetailsPage.module.css";
 
 function PostDetailsPage() {
   const post = useLoaderData();
@@ -12,12 +14,28 @@ function PostDetailsPage() {
   return (
     <>
       <Container>
-        <div>
-          <h3>{post.title}</h3>
-          <p>Author:{userInfo.user.name} </p>
-          <p>Category : {post.category}</p>
-          <p>{post.content}</p>
-          <img src={post.image} alt={post.title} />
+        <Paper
+          shadow="md"
+          p="xl"
+          radius="md"
+          className={classes.card}
+          style={{
+            backgroundImage: `url(${post.image})`,
+          }}
+        >
+          <Title order={3} className={classes.title}>
+            {post.title}
+          </Title>
+          <Text className={classes.category} size="xs">
+            Author:{userInfo.user.name}{" "}
+          </Text>
+          <Text className={classes.category} size="xs">
+            Category : {post.category}
+          </Text>
+          <Text className={classes.category} size="xs">
+            {post.content}
+          </Text>
+
           <Button>
             <Link to="/posts">Back to Posts</Link>
           </Button>
@@ -25,9 +43,9 @@ function PostDetailsPage() {
           <br />
 
           <Button>
-            <Link to="/PostEdit.page">Edit</Link>
+            <Link to={`/PostEdit.Page/${post.id}`}>Edit</Link>
           </Button>
-        </div>
+        </Paper>
       </Container>
     </>
   );
